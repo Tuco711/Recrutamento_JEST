@@ -55,11 +55,14 @@ CCs_idx = np.where(CCs > 0.6)[0]
 CCs_idx.tolist()
 
 data_treino = load_data.iloc[:128][CCs_idx]
+data_final = load_data.iloc[128:][CCs_idx]
+
 train_x, test_x, train_y, test_y = train_test_split(data_treino, labels, test_size=0.25,
                                                     stratify=labels, random_state=5)
 
 
 # ----------------------------------------------- Modelização ----------------------------------------------------------
+
 
 def decisionTree():
     clf = tree.DecisionTreeClassifier()
@@ -71,18 +74,21 @@ def decisionTree():
     prec = sklearn.metrics.precision_score(test_y, pred_teste)
     f1 = sklearn.metrics.f1_score(test_y, pred_teste)
 
+    print("------------ Avaliação ------------")
     print("Accuracy =", acura)
     print("Precision =", prec)
     print("f1 =", f1)
-    # ----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+
+    pred_final = clf.predict(data_final)    # Classificação dos faltantes
+
+# ----------------------------------------------------------------------------------------------------------------------
     plt.figure()
     tree.plot_tree(clf)
     plt.title("Árvore de Decisão")
     plt.show()
 
-    return pred_teste
-
-# ----------------------------------------------------------------------------------------------------------------------
+    return pred_final
 
 
 classificacao = decisionTree()
