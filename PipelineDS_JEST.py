@@ -54,8 +54,12 @@ CCs_idx = np.where(CCs > 0.6)[0]
 
 CCs_idx.tolist()
 
-data_treino = load_data.iloc[:128][CCs_idx]
-data_final = load_data.iloc[128:][CCs_idx]
+data = load_data[:][CCs_idx]
+data = data - data.min()
+data = data / data.max()
+
+data_treino = data.iloc[:128][CCs_idx]
+data_final = data.iloc[128:][CCs_idx]
 
 train_x, test_x, train_y, test_y = train_test_split(data_treino, labels, test_size=0.25,
                                                     stratify=labels, random_state=5)
