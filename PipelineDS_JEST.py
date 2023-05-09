@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import sklearn.model_selection
 from sklearn import tree
+from sklearn.model_selection import train_test_split
 
 load_data = pd.read_csv("C:\\Users\\arthu\\OneDrive - dei.uc.pt\\JEST\\ProjetoTI_part2-master\\Leukemya_data.csv",
                         header=None, index_col=None, delimiter=',')
@@ -53,11 +55,34 @@ CCs_idx = np.where(CCs > 0.6)[0]
 CCs_idx.tolist()
 
 data_treino = load_data.iloc[:128][CCs_idx]
+train_x, test_x, train_y, test_y = train_test_split(data_treino, labels, test_size=0.25,
+                                                    stratify=labels, random_state=5)
+
 
 # ----------------------------------------------- Modelização ----------------------------------------------------------
-clf = tree.DecisionTreeClassifier()
-clf.fit(data_treino, labels)
-plt.figure()
-tree.plot_tree(clf)
-plt.title("Árvore de Decisão")
-plt.show()
+
+def decisionTree():
+    clf = tree.DecisionTreeClassifier()
+    clf.fit(train_x, train_y)
+
+    pred_teste = clf.predict(test_x)
+
+    acura = sklearn.metrics.accuracy_score(test_y, pred_teste)
+    prec = sklearn.metrics.precision_score(test_y, pred_teste)
+    f1 = sklearn.metrics.f1_score(test_y, pred_teste)
+
+    print("Accuracy =", acura)
+    print("Precision =", prec)
+    print("f1 =", f1)
+    # ----------------------------------------------------------------------------------------------------------------------
+    plt.figure()
+    tree.plot_tree(clf)
+    plt.title("Árvore de Decisão")
+    plt.show()
+
+    return pred_teste
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+classificacao = decisionTree()
